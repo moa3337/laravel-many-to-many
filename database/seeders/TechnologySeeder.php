@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\Type;
+use App\Models\Technology;
 use Faker\Generator as Faker;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class TypeSeeder extends Seeder
+class TechnologySeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,13 +16,13 @@ class TypeSeeder extends Seeder
      */
     public function run(Faker $faker)
     {
-        $labels = ["Bootstrap", "Tailwind", "Vue", "Laravel", "PHPMyAdmin", "GIT"];
+        $labels = ["HTML 5", "CSS", "Javascript", "PHP", "GIT", "Blade"];
 
         foreach ($labels as $label) {
-            $type = new Type();
-            $type->label = $label;
-            $type->color = $faker->hexColor;
-            $type->save();
+            $technology = new Technology();
+            $technology->label = $label;
+            $technology->color = $faker->hexColor;
+            $technology->save();
         }
     }
 }

@@ -19,8 +19,9 @@
         <thead>
             <tr>
                 <th scope="col">id</th>
-                <th scope="col">Tipologia</th>
                 <th scope="col">Name</th>
+                <th scope="col">Tipologia</th>
+                <th scope="col">Tecnologia</th>
                 <th scope="col">Description</th>
                 <th scope="col">
                     Ultima modifica
@@ -36,8 +37,15 @@
             @forelse ($projects as $project)
             <tr>
                 <th scope="row">{{ $project->id }}</th>
-                <td>{{ $project->type?->label }}</td>
                 <td>{{ $project->title }}</td>
+                <td>{{ $project->type?->label }}</td>
+                <td>
+                    @forelse($project->technologies as $technology)
+                        {{ $technology->label }}
+                        @if (!$loop->last) , @endif 
+                    @empty -
+                    @endforelse
+                </td>
                 <td>{{ $project->getAbstract(10) }}</td>
                 <td>{{ $project->updated_at }}</td>
                 <td>{{ $project->created_at }}</td>

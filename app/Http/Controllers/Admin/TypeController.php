@@ -124,8 +124,9 @@ class TypeController extends Controller
     {
         $type_id = $type->id;
         $type->delete();
+
         return to_route('admin.types.index')
-            - with('message')
-            - with('message', "Tipologia $type_id eliminata!");
+            ->with('message')
+            ->with('message', "Tipologia $type_id eliminata!");
     }
 }
