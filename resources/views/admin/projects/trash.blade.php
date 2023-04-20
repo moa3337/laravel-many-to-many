@@ -69,6 +69,11 @@
             </tr>  
 
             @empty
+                <tr>
+                    <td class="fw-bold" colspan="7">
+                        Nessun elemento nella cestino.
+                    </td>
+                </tr>
             @endforelse
         </tbody>
     </table> 
@@ -118,7 +123,7 @@
                     Sei sicuro di voler ripristinare "{{ $project->title }}"?
                 </div>
                 <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
                     <form method="POST" action="{{ route('admin.projects.restore', $project) }}">
                         @method('put')
                         @csrf

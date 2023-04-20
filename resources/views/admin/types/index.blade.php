@@ -40,9 +40,7 @@
                     </span>
                 </td>
                 <td>
-                    <span class="badge rounded-pill" style="background-color: {{ $type->color }}">
-                        {{ $type->label }}
-                    </span>
+                    {!! $type->getBadgeHTML() !!}
                 </td>
                 <td>{{ $type->created_at }}</td>
                 <td>{{ $type->updated_at }}</td>
@@ -64,6 +62,11 @@
             </tr>
             
             @empty
+            <tr>
+                <td class="fw-bold" colspan="6">
+                    Nessun elemento nella lista! Prova ad aggiungerne uno nuovo.
+                </td>
+            </tr>
             
             @endforelse
         </tbody>

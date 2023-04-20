@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Models\Technology;
 use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -31,7 +32,8 @@ class ProjectController extends Controller
     {
         $project = new Project;
         $types = Type::all();
-        return view('admin.projects.form', compact('project', 'types'));
+        $technologies = Technology::all();
+        return view('admin.projects.form', compact('project', 'types', 'technologies'));
     }
 
     /**
@@ -49,6 +51,7 @@ class ProjectController extends Controller
                 'text' => 'required|string',
                 'published' => 'boolean',
                 'type_id' => 'nullable|exists:types,id',
+                'technologies' => 'nullable|exists:technologies,id',
             ],
             [
                 'title.required' => 'Il titolo è obbligatorio',
@@ -58,6 +61,7 @@ class ProjectController extends Controller
                 'text.required' => 'La descrizione è obbligatoria',
                 'text.string' => 'La descrizione deve essere una stringa',
                 'type_id.exists' => 'L\'id del tipo non è valido',
+                'technologies.exists' => 'Le tecnologie aggiunte non sono valide',
             ]
         );
 
@@ -73,6 +77,9 @@ class ProjectController extends Controller
         $project->slug = Project::generateSlug($project->title);
         $project->image = $path;
         $project->save();
+
+        if (Arr::exists($data, "technologies"))
+            $project->technologies()->attach($data["technologies"]);
 
         return to_route('admin.projects.show', $project)
             ->with('message', 'Progetto creato con successo');
@@ -98,7 +105,9 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $types = Type::all();
-        return view('admin.projects.form', compact('project', 'types'));
+        $technologies = Technology::all();
+        $project_technologies = $project->technologies->pluck('id')->toArray();
+        return view('admin.projects.form', compact('project', 'types', 'technologies', 'project_technologies'));
     }
 
     /**
@@ -110,6 +119,7 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
+        //dd($request->all());
         $request->validate(
             [
                 'title' => 'required|string|max:100',
@@ -117,6 +127,7 @@ class ProjectController extends Controller
                 'text' => 'required|string',
                 'published' => 'boolean',
                 'type_id' => 'nullable|exists:types,id',
+                'technologies' => 'nullable|exists:technologies,id',
             ],
             [
                 'title.required' => 'Il titolo è obbligatorio',
@@ -126,6 +137,7 @@ class ProjectController extends Controller
                 'text.required' => 'La descrizione è obbligatoria',
                 'text.string' => 'La descrizione deve essere una stringa',
                 'type_id.exists' => 'L\'id del tipo non è valido',
+                'technologies.exists' => 'Le tecnologie aggiunte non sono valide',
             ]
         );
 
@@ -140,6 +152,11 @@ class ProjectController extends Controller
         }
 
         $project->update($data);
+
+        if (Arr::exists($data, "technologies"))
+            $project->technologies()->sync($data["technologies"]);
+        else
+            $project->technologies()->detach();
 
         return to_route('admin.projects.show', $project)
             ->with('message', 'Progetto modificato con successo');
@@ -186,6 +203,7 @@ class ProjectController extends Controller
         //$id_project = $project->id;
 
         if ($project->image) Storage::delete($project->image);
+        $project->technologies()->detach();
         $project->forceDelete();
 
         return to_route('admin.projects.trash')

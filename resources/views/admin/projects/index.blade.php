@@ -38,11 +38,10 @@
             <tr>
                 <th scope="row">{{ $project->id }}</th>
                 <td>{{ $project->title }}</td>
-                <td>{{ $project->type?->label }}</td>
+                <td>{!! $project->type?->getBadgeHTML() !!}</td>
                 <td>
                     @forelse($project->technologies as $technology)
-                        {{ $technology->label }}
-                        @if (!$loop->last) , @endif 
+                        {!! $technology->getBadgeHTML() !!}                       
                     @empty -
                     @endforelse
                 </td>
@@ -66,6 +65,11 @@
             </tr>
             
             @empty
+            <tr>
+                <td class="fw-bold" colspan="7">
+                    Nessun elemento nella lista! Prova ad aggiungerne uno nuovo.
+                </td>
+            </tr>
             
             @endforelse
         </tbody>

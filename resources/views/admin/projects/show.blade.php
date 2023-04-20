@@ -16,9 +16,19 @@
             <h3></h3>
             <p>
                 <strong>Categoria: </strong>
-                <span class="badge rounded-pill" style="background-color: {{ $project->type?->color }}">
-                    {{ $project->type?->label }}   
-                </span>
+                @if ($project->type)
+                    {!! $project->type?->getBadgeHTML() !!}  
+                @else 
+                    Nessuna tipologia
+                @endif
+               
+
+                <strong>Tecnologia: </strong>
+                @forelse ($project->technologies as $technology)
+                    {!! $technology->getBadgeHTML() !!}
+                @empty
+                    Nessuna ecnologia
+                @endforelse 
             </p>
             <figure class="float-end">
                 <img src="{{ $project->getImageUri() }}" class="w-50" alt="{{ $project->slug }}">
